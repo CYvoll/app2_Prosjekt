@@ -7,7 +7,7 @@ Beskrivelse: Appen skal gi mulighet for å spille det klassiske spillet stein, s
 Begge spillerene kan bytte trekk frem til begge har valgt trekk (Kanskje ha en knapp for å bekrefte trekket).  
   
 
-Link til feauture map:
+Link til feauture map: https://www.figma.com/design/4WdXHfU2N1OQOWlwkD9M3x/App2_feature_map?node-id=43-235&p=f 
 
 Link til project manager: https://github.com/users/CYvoll/projects/3/views/1
 
