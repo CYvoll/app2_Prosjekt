@@ -10,4 +10,16 @@ const testGame = [
 gamesRouter.get("/", (req, res, next) => {
     res.status(200);
     res.send(testGame);
-});I
+});
+
+
+gamesRouter.get("/:gameId", (req, res, next) => {
+  res.send("GameDetails");
+});
+
+
+gamesRouter.post("/", validateSymbol, (req, res, next) => {
+  res.send("GameCreated");
+});
+
+export default gamesRouter;

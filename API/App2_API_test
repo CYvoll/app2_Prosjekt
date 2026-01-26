@@ -1,0 +1,133 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: Rock-Paper-Scissors API
+meta:
+  id: wrk_4d419f80168749a6a740985f80ec9f13
+  created: 1769404397255
+  modified: 1769404397255
+  description: ""
+collection:
+  - url: "{{ _[''].base_url }}/games"
+    name: "List games "
+    meta:
+      id: req_17680ccd55094408a9cd641d466d98ef
+      created: 1769404708020
+      modified: 1769405314160
+      isPrivate: false
+      description: ""
+      sortKey: -1769404708020
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.3.0
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "{{ _[''].base_url }}/games/1"
+    name: Get game by id
+    meta:
+      id: req_6f84a4246f4f4202b041a3b767733df0
+      created: 1769405256216
+      modified: 1769405412630
+      isPrivate: false
+      description: ""
+      sortKey: -1769405256216
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.3.0
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "{{ _[''].base_url }}/games"
+    name: Create game
+    meta:
+      id: req_0c17b7e0190341c49de62728043e343f
+      created: 1769405438688
+      modified: 1769405546714
+      isPrivate: false
+      description: ""
+      sortKey: -1769405438688
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"symbol": "rock"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/12.3.0
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "{{ _[''].base_url }}/games"
+    name: Create game with invalid symbol
+    meta:
+      id: req_285e898a8ed24d4f9a85e2eb416485cf
+      created: 1769405616014
+      modified: 1769405635867
+      isPrivate: false
+      description: ""
+      sortKey: -1769405347452
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"symbol": "gun"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/12.3.0
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_d2c86fa312db80f2baabdb1e7662bf3e191041de
+    created: 1769404397262
+    modified: 1769404397262
+environments:
+  name: Base Environment
+  meta:
+    id: env_d2c86fa312db80f2baabdb1e7662bf3e191041de
+    created: 1769404397258
+    modified: 1769404989121
+    isPrivate: false
+  data:
+    "":
+      base_url: http://localhost:8080

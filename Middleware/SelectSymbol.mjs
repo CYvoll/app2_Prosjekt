@@ -1,7 +1,7 @@
 
 const symbolsAllowed = ["rock", "paper", "scissors"];
 
-export function validateSymbol(req, res, next) {
+export default function validateSymbol(req, res, next) {
     const symbol = req.body.symbol;
 
     if (!symbolsAllowed.includes(symbol)) {
