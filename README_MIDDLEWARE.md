@@ -1,1 +1,0 @@
-Middelwaren "validateSymbol" skjekker at man kun kan bruke de tre symbolene som er godtatt (stein, saks og papir). Hvis man putter inn noe annet vil det bli returnert en 400 Bad Request.
