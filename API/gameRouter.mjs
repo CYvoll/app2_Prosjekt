@@ -1,5 +1,5 @@
 import express from "express"
-import validateSymbol from "../Middleware/SelectSymbol.mjs"
+import validateSymbol from "../Middleware/ValidateSymbol.mjs"
 
 const gamesRouter = express.Router();
 
@@ -22,4 +22,4 @@ gamesRouter.post("/", validateSymbol, (req, res, next) => {
   res.send("GameCreated");
 });
 
-export default gamesRouter;
+export default gamesRouter; 
