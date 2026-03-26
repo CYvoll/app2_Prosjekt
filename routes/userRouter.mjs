@@ -20,6 +20,13 @@ userRouter.get("/:userId", (req, res) => {
 
 userRouter.post("/", (req, res, next) => {
   try {
+       const { username } = req.body;
+
+    if (users.getByUsername(username)) {
+      return res.status(409).json({
+        error: "Username already taken"
+      });
+    }
     const newUser = makeUser(req.body);
     const savedUser = users.create(newUser);
     res.status(201).json(savedUser);

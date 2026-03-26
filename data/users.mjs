@@ -5,6 +5,12 @@ export function create(user) {
   return user;
 }
 
+export function getByUsername(username) {
+  return Object.values(memoryStore.users).find(
+    (user) => user.username === username
+  ) || null;
+}
+
 export function getById(id) {
   return memoryStore.users[id] || null;
 }
