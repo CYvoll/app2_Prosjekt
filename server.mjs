@@ -1,20 +1,24 @@
 import express from "express";
-import gamesRouter from "./API/gameRouter.mjs";
-import userRouter from "./API/userRouter.mjs";
-import errorHandler from "./Modules/errorHandler.mjs";
+import path from "node:path";
+
+import userRouter from "./routes/userRouter.mjs";
+import gameRouter from "./routes/gameRouter.mjs";
+import rulesetRouter from "./routes/rulesetRouter.mjs";
+import errorHandler from "./middleware/errorHandler.mjs";
 
 const app = express();
-const port = 8080;
+const PORT = process.env.PORT || 3000;
 
-app.use(express.static('public'));
 app.use(express.json());
+app.use(express.static("public"));
 
-app.use("/games", gamesRouter);
 app.use("/users", userRouter);
+app.use("/games", gameRouter);
+app.use("/rulesets", rulesetRouter);
 
 app.use(errorHandler);
 
-app.listen(port, () => {
-  console.log(`App listening on port ${port}`);
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });
 

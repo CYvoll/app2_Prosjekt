@@ -1,0 +1,32 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 2rem;
+}
+
+main {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+section {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+button {
+  margin-right: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+input {
+  margin-right: 0.5rem;
+}
+
+nav {
+  margin-bottom: 1rem;
+}
+
+nav a {
+  margin-right: 1rem;
+}
