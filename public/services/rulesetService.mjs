@@ -1,4 +1,4 @@
-import { apiFetch } from "client.js";
+import { apiFetch } from "./client.mjs";
 
 export function createRuleset({ ownerId, name }) {
   return apiFetch("/rulesets", {

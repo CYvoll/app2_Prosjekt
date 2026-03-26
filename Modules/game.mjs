@@ -1,35 +1,30 @@
-import { generateId } from "./id.mjs";
+import { generateId } from "./userId.mjs";
 
 export function getRandomChoice(symbols) {
   const index = Math.floor(Math.random() * symbols.length);
   return symbols[index];
 }
 
-export function calculateResult(playerChoice, opponentChoice, ruleset) {
-  if (playerChoice === opponentChoice) {
-    return "draw";
-  }
+export function calculateResult(playerChoice, opponentChoice, rules) {
+  if (playerChoice === opponentChoice) return "draw";
 
-  const winningAgainst = ruleset.rules[playerChoice] || [];
+  const winsAgainst = rules[playerChoice] || [];
 
-  if (winningAgainst.includes(opponentChoice)) {
+  if (winsAgainst.includes(opponentChoice)) {
     return "win";
   }
 
   return "loss";
 }
 
-export function makeGame({ userId, ruleset, choice, opponentType = "ai" }) {
-  if (!userId) {
-    throw new Error("userId is required");
-  }
-
-  if (!ruleset) {
-    throw new Error("ruleset is required");
-  }
-
+export function makeGame({ userId, ruleset, choice }) {
   const opponentChoice = getRandomChoice(ruleset.symbols);
-  const result = calculateResult(choice, opponentChoice, ruleset);
+
+  const result = calculateResult(
+    choice,
+    opponentChoice,
+    ruleset.rules
+  );
 
   return {
     id: generateId("game"),
@@ -37,7 +32,6 @@ export function makeGame({ userId, ruleset, choice, opponentType = "ai" }) {
     rulesetId: ruleset.id,
     playerChoice: choice,
     opponentChoice,
-    opponentType,
     result
   };
 }

@@ -1,3 +1,3 @@
-import "./components/user-form.js";
-import "./components/ruleset-form.js";
-import "./components/game-ui.js";
+import "./components/user-form.mjs";
+import "./components/ruleset-form.mjs";
+import "./components/game-ui.mjs";

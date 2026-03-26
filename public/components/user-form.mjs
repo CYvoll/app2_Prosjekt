@@ -1,4 +1,4 @@
-import { createUser, deleteUser } from "../logic/userService.js";
+import { createUser, deleteUser } from "../services/userService.mjs";
 
 class UserForm extends HTMLElement {
   connectedCallback() {

@@ -33,3 +33,15 @@ export function share(id) {
 export function getPublic() {
   return Object.values(memoryStore.rulesets).filter((ruleset) => ruleset.isPublic);
 }
+
+export function getDefaultRuleset() {
+  return {
+    id: "default",
+    symbols: ["rock", "paper", "scissors"],
+    rules: {
+      rock: ["scissors"],
+      paper: ["rock"],
+      scissors: ["paper"]
+    }
+  };
+}

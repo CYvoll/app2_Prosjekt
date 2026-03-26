@@ -7,7 +7,7 @@ function user() {
 }
 
 
-export function generateID() {
+export function generateId() {
     let id = null;
     do {
         id = (Math.random() * Number.MAX_SAFE_INTEGER).toString(16);

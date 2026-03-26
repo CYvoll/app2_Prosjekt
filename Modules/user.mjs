@@ -1,4 +1,4 @@
-import { generateId } from "./id.mjs";
+import { generateId } from "./userId.mjs";
 
 export function makeUser({ username, acceptTos }) {
   if (!username || typeof username !== "string") {

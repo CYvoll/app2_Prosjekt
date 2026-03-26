@@ -7,7 +7,7 @@ import rulesetRouter from "./routes/rulesetRouter.mjs";
 import errorHandler from "./middleware/errorHandler.mjs";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 app.use(express.json());
 app.use(express.static("public"));

@@ -1,4 +1,4 @@
-import { createRuleset, getAllRulesets, shareRuleset } from "../logic/rulesetService.js";
+import { createRuleset, getAllRulesets, shareRuleset } from "../services/rulesetService.mjs";
 
 class RulesetForm extends HTMLElement {
   async connectedCallback() {

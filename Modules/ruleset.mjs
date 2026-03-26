@@ -1,4 +1,4 @@
-import { generateId } from "./id.mjs";
+import { generateId } from "./userId.mjs";
 
 export function makeRuleset({ ownerId, name, symbols, rules }) {
   if (!ownerId) {

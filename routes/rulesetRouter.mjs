@@ -1,5 +1,5 @@
 import express from "express";
-import { makeRuleset } from "../modules/rulesetLogic.mjs";
+import { makeRuleset } from "../modules/ruleset.mjs";
 import * as rulesets from "../data/rulesets.mjs";
 
 const rulesetRouter = express.Router();
