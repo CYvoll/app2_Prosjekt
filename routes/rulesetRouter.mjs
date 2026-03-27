@@ -4,52 +4,81 @@ import * as rulesets from "../data/rulesets.mjs";
 
 const rulesetRouter = express.Router();
 
-rulesetRouter.get("/", (req, res) => {
-  res.json(rulesets.getAll());
-});
-
-rulesetRouter.get("/public", (req, res) => {
-  res.json(rulesets.getPublic());
-});
-
-rulesetRouter.get("/:rulesetId", (req, res) => {
-  const ruleset = rulesets.getById(req.params.rulesetId);
-
-  if (!ruleset) {
-    return res.status(404).json({ error: "Ruleset not found" });
+rulesetRouter.get("/", async (req, res, next) => {
+  try {
+    const allRulesets = await rulesets.getAll();
+    res.json(allRulesets);
+  } catch (error) {
+    next(error);
   }
-
-  res.json(ruleset);
 });
 
-rulesetRouter.post("/", (req, res, next) => {
+rulesetRouter.get("/public", async (req, res, next) => {
+  try {
+    const publicRulesets = await rulesets.getPublic();
+    res.json(publicRulesets);
+  } catch (error) {
+    next(error);
+  }
+});
+
+rulesetRouter.get("/:rulesetId", async (req, res, next) => {
+  try {
+    const ruleset = await rulesets.getById(req.params.rulesetId);
+
+    if (!ruleset) {
+      return res.status(404).json({
+        error: "Ruleset not found"
+      });
+    }
+
+    res.json(ruleset);
+  } catch (error) {
+    next(error);
+  }
+});
+
+rulesetRouter.post("/", async (req, res, next) => {
   try {
     const newRuleset = makeRuleset(req.body);
-    const savedRuleset = rulesets.create(newRuleset);
+    const savedRuleset = await rulesets.create(newRuleset);
+
     res.status(201).json(savedRuleset);
   } catch (error) {
     next(error);
   }
 });
 
-rulesetRouter.put("/:rulesetId", (req, res) => {
-  const updated = rulesets.update(req.params.rulesetId, req.body);
+rulesetRouter.put("/:rulesetId", async (req, res, next) => {
+  try {
+    const updated = await rulesets.update(req.params.rulesetId, req.body);
 
-  if (!updated) {
-    return res.status(404).json({ error: "Ruleset not found" });
+    if (!updated) {
+      return res.status(404).json({
+        error: "Ruleset not found"
+      });
+    }
+
+    res.json(updated);
+  } catch (error) {
+    next(error);
   }
-
-  res.json(updated);
 });
 
-rulesetRouter.post("/:rulesetId/share", (req, res) => {
-  const sharedRuleset = rulesets.share(req.params.rulesetId);
+rulesetRouter.post("/:rulesetId/share", async (req, res, next) => {
+  try {
+    const shared = await rulesets.share(req.params.rulesetId);
 
-  if (!sharedRuleset) {
-    return res.status(404).json({ error: "Ruleset not found" });
+    if (!shared) {
+      return res.status(404).json({
+        error: "Ruleset not found"
+      });
+    }
+
+    res.json(shared);
+  } catch (error) {
+    next(error);
   }
-
-  res.json(sharedRuleset);
 });
 
 export default rulesetRouter;
