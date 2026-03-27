@@ -26,8 +26,14 @@ class AppDashboard extends HTMLElement {
         <div id="dashboard-message" class="dashboard-message"></div>
 
         <div id="dashboard-layout" class="dashboard-layout">
-          <div class="dashboard-game">
-            <game-ui></game-ui>
+          <div class="dashboard-main">
+            <div class="dashboard-game">
+              <game-ui></game-ui>
+            </div>
+
+            <div class="dashboard-multiplayer">
+              <multiplayer-ui></multiplayer-ui>
+            </div>
           </div>
 
           <aside class="dashboard-side">
@@ -41,6 +47,7 @@ class AppDashboard extends HTMLElement {
     window.addEventListener("user-changed", () => this.refresh());
     window.addEventListener("ruleset-changed", () => this.refresh());
     window.addEventListener("game-played", () => this.refresh());
+    window.addEventListener("match-updated", () => this.refresh());
 
     this.refresh();
   }
