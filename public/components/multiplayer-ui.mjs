@@ -129,7 +129,10 @@ class MultiplayerUI extends HTMLElement {
       this.setInfo(`Joined match: ${match.id}`);
       this.renderMatch(match);
       this.startPolling();
-      window.dispatchEvent(new CustomEvent("match-updated", { detail: match }));
+
+      window.dispatchEvent(
+        new CustomEvent("match-updated", { detail: match })
+      );
     } catch (error) {
       this.setInfo(error.message);
     }
@@ -159,7 +162,10 @@ class MultiplayerUI extends HTMLElement {
       }
 
       this.renderMatch(match);
-      window.dispatchEvent(new CustomEvent("match-updated", { detail: match }));
+
+      window.dispatchEvent(
+        new CustomEvent("match-updated", { detail: match })
+      );
     } catch (error) {
       this.setResult(error.message);
     }
@@ -167,17 +173,23 @@ class MultiplayerUI extends HTMLElement {
 
   async pollMatch() {
     const matchId = localStorage.getItem("currentMatchId");
-    if (!matchId) return;
+
+    if (!matchId) {
+      return;
+    }
 
     try {
       const match = await getMatchById(matchId);
+
       this.renderMatch(match);
 
       if (match.result) {
         this.renderResult(match);
       }
 
-      window.dispatchEvent(new CustomEvent("match-updated", { detail: match }));
+      window.dispatchEvent(
+        new CustomEvent("match-updated", { detail: match })
+      );
     } catch (error) {
       this.setStatus("Could not refresh match");
     }
@@ -202,20 +214,39 @@ class MultiplayerUI extends HTMLElement {
   renderMatch(match) {
     const currentUserId = localStorage.getItem("currentUserId");
 
-    const role =
-      currentUserId === match.hostUserId
-        ? "Host"
-        : currentUserId === match.guestUserId
-          ? "Guest"
-          : "Viewer";
+    const isHost = currentUserId === match.hostUserId;
+    const isGuest = currentUserId === match.guestUserId;
 
+    const role = isHost ? "Host" : isGuest ? "Guest" : "Viewer";
     const guestText = match.guestUserId ? "Guest joined" : "Waiting for guest";
-    const hostChoiceText = match.hostChoice ? `Host played: ${match.hostChoice}` : "Host has not played yet";
-    const guestChoiceText = match.guestChoice ? `Guest played: ${match.guestChoice}` : "Guest has not played yet";
 
-    this.setStatus(
-      `Role: ${role} | ${guestText} | ${hostChoiceText} | ${guestChoiceText}`
-    );
+    let yourChoice = null;
+    let opponentHasPlayed = false;
+
+    if (isHost) {
+      yourChoice = match.hostChoice;
+      opponentHasPlayed = !!match.guestChoice;
+    } else if (isGuest) {
+      yourChoice = match.guestChoice;
+      opponentHasPlayed = !!match.hostChoice;
+    }
+
+    if (!match.result) {
+      const yourChoiceText = yourChoice
+        ? "You have submitted your choice"
+        : "You have not played yet";
+
+      const opponentChoiceText = opponentHasPlayed
+        ? "Opponent has submitted a choice"
+        : "Opponent has not played yet";
+
+      this.setStatus(
+        `Role: ${role} | ${guestText} | ${yourChoiceText} | ${opponentChoiceText}`
+      );
+      return;
+    }
+
+    this.setStatus(`Role: ${role} | ${guestText} | Match complete`);
   }
 
   renderResult(match) {
