@@ -11,3 +11,6 @@ Link til feauture map: https://www.figma.com/design/4WdXHfU2N1OQOWlwkD9M3x/App2_
 Link til project manager: https://github.com/users/CYvoll/projects/3/views/1
 
 Link til web service: https://app2-prosjekt-985r.onrender.com/
+
+
+*etter commiten kalt "lagt til i18n solution" så stoppet login og skapelse av brukere å fungere. Ble ikke fikset dette i tide.
