@@ -1,4 +1,4 @@
-export function makeUser({ username, acceptTos }, t) {
+export default function makeUser({ username, acceptTos }, t) {
   if (!username || typeof username !== "string") {
     throw new Error(t.usernameRequired);
   }
