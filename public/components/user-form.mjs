@@ -4,6 +4,8 @@ import {
   loginUserByUsername
 } from "../services/userService.mjs";
 
+import { t } from "../lang/i18n.mjs";
+
 class UserForm extends HTMLElement {
   connectedCallback() {
     this.innerHTML = `
@@ -73,7 +75,7 @@ class UserForm extends HTMLElement {
       localStorage.removeItem("currentUserId");
       localStorage.removeItem("currentUsername");
 
-      output.textContent = "Logged out";
+      output.textContent = t("loggedOut");
       window.dispatchEvent(new CustomEvent("user-changed"));
     });
 
@@ -82,7 +84,7 @@ class UserForm extends HTMLElement {
         const userId = localStorage.getItem("currentUserId");
 
         if (!userId) {
-          throw new Error("No current user");
+          throw new Error(t("noCurrentUser"));
         }
 
         await deleteUser(userId);
@@ -90,7 +92,7 @@ class UserForm extends HTMLElement {
         localStorage.removeItem("currentUserId");
         localStorage.removeItem("currentUsername");
 
-        output.textContent = "User deleted";
+        output.textContent = t("userDeleted");
         window.dispatchEvent(new CustomEvent("user-changed"));
       } catch (error) {
         output.textContent = error.message;

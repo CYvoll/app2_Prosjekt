@@ -1,3 +1,5 @@
+import { t } from "../lang/i18n.mjs";
+
 export async function apiFetch(url, options = {}) {
   try {
     const response = await fetch(url, options);
@@ -14,7 +16,7 @@ export async function apiFetch(url, options = {}) {
     return data;
   } catch (error) {
     if (!navigator.onLine) {
-      throw new Error("You are offline. This feature requires internet.");
+      throw new Error(t("offlineInternetRequired"));
     }
 
     throw new Error(error.message || "Network request failed");

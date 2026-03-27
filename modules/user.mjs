@@ -1,12 +1,10 @@
-import { generateId } from "./userId.mjs";
-
-export function makeUser({ username, acceptTos }) {
+export function makeUser({ username, acceptTos }, t) {
   if (!username || typeof username !== "string") {
-    throw new Error("Username is required");
+    throw new Error(t.usernameRequired);
   }
 
   if (acceptTos !== true) {
-    throw new Error("You must accept the Terms of Service");
+    throw new Error(t.tosRequired);
   }
 
   return {

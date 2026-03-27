@@ -1,9 +1,15 @@
-export default function errorHandler(err, req, res, next) {
-  console.error(err);
-
-  if (res.headersSent) {
-    return next(err);
+export function makeUser({ username, acceptTos }, t) {
+  if (!username || typeof username !== "string") {
+    throw new Error(t.usernameRequired);
   }
 
-  res.status(500).send(err.message || "Internal Server Error");
+  if (acceptTos !== true) {
+    throw new Error(t.tosRequired);
+  }
+
+  return {
+    id: generateId("user"),
+    username,
+    consentToS: true
+  };
 }

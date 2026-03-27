@@ -29,8 +29,8 @@ userRouter.get("/login/:username", async (req, res, next) => {
 
     if (!user) {
       return res.status(404).json({
-        error: "User not found"
-      });
+       error: req.t.userNotFound
+     });
     }
 
     res.json(user);
@@ -45,8 +45,8 @@ userRouter.get("/:userId/stats", async (req, res, next) => {
 
     if (!user) {
       return res.status(404).json({
-        error: "User not found"
-      });
+       error: req.t.userNotFound
+     });
     }
 
     const stats = await games.getStatsByUserId(req.params.userId);
@@ -62,8 +62,8 @@ userRouter.get("/:userId", async (req, res, next) => {
 
     if (!user) {
       return res.status(404).json({
-        error: "User not found"
-      });
+       error: req.t.userNotFound
+     });
     }
 
     res.json(user);
@@ -76,13 +76,11 @@ userRouter.post("/", async (req, res, next) => {
   try {
     const { username } = req.body;
 
-    if (await users.getByUsername(username)) {
-      return res.status(409).json({
-        error: "Username already taken"
-      });
-    }
+    return res.status(409).json({
+      error: req.t.usernameTaken
+    });
 
-    const newUser = makeUser(req.body);
+    const newUser = makeUser(req.body, req.t);
     const savedUser = await users.create(newUser);
 
     res.status(201).json(savedUser);
@@ -97,8 +95,8 @@ userRouter.delete("/:userId", async (req, res, next) => {
 
     if (!deleted) {
       return res.status(404).json({
-        error: "User not found"
-      });
+       error: req.t.userNotFound
+     });
     }
 
     res.json({
