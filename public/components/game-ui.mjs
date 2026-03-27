@@ -3,14 +3,19 @@ import { createGame } from "../services/gameService.mjs";
 class GameUI extends HTMLElement {
   connectedCallback() {
     this.innerHTML = `
-      <h2>Play</h2>
-      <button data-choice="rock">Rock</button>
-      <button data-choice="paper">Paper</button>
-      <button data-choice="scissors">Scissors</button>
-      <p id="result"></p>
+      <section class="panel">
+        <h2>Play</h2>
+        <p>Select a move:</p>
+        <div class="button-row">
+          <button data-choice="rock">Rock</button>
+          <button data-choice="paper">Paper</button>
+          <button data-choice="scissors">Scissors</button>
+        </div>
+        <p id="result"></p>
+      </section>
     `;
 
-    this.querySelectorAll("button").forEach(btn => {
+    this.querySelectorAll("button[data-choice]").forEach((btn) => {
       btn.addEventListener("click", () => {
         this.play(btn.dataset.choice);
       });
@@ -18,16 +23,24 @@ class GameUI extends HTMLElement {
   }
 
   async play(choice) {
-    const userId = localStorage.getItem("currentUserId");
+    try {
+      const userId = localStorage.getItem("currentUserId");
+      const rulesetId = localStorage.getItem("currentRulesetId") || "default";
 
-    const game = await createGame({
-      userId,
-      rulesetId: "default",
-      choice
-    });
+      if (!userId) {
+        this.querySelector("#result").textContent = "Create a user first";
+        return;
+      }
 
-    this.querySelector("#result").textContent =
-      `You chose ${game.playerChoice}, AI chose ${game.opponentChoice} → ${game.result}`;
+      const game = await createGame({ userId, rulesetId, choice });
+
+      this.querySelector("#result").textContent =
+        `You chose ${game.playerChoice}, opponent chose ${game.opponentChoice}. Result: ${game.result}`;
+
+      window.dispatchEvent(new CustomEvent("game-played", { detail: game }));
+    } catch (error) {
+      this.querySelector("#result").textContent = error.message || "Game failed";
+    }
   }
 }
 

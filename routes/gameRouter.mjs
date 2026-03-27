@@ -1,7 +1,7 @@
 import express from "express";
 import { makeGame } from "../modules/game.mjs";
-import * as games from "../data/games.mjs";
 import { validateChoice } from "../middleware/validateChoice.mjs";
+import * as games from "../data/games.mjs";
 
 const gameRouter = express.Router();
 
@@ -22,9 +22,7 @@ gameRouter.post("/", validateChoice, async (req, res, next) => {
     });
 
     const savedGame = await games.create(game);
-
     res.status(201).json(savedGame);
-
   } catch (error) {
     next(error);
   }

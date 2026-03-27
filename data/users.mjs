@@ -53,3 +53,22 @@ export async function remove(id) {
 
   return result.rows.length > 0;
 }
+
+export async function getLeaderboard() {
+  const result = await pool.query(
+    `SELECT u.id, u.username,
+            COALESCE(SUM(CASE WHEN g.result = 'win' THEN 1 ELSE 0 END), 0) AS wins,
+            COUNT(g.id) AS total_games
+     FROM users u
+     LEFT JOIN games g ON u.id = g.user_id
+     GROUP BY u.id, u.username
+     ORDER BY wins DESC, total_games DESC, u.username ASC`
+  );
+
+  return result.rows.map((row) => ({
+    id: row.id,
+    username: row.username,
+    wins: Number(row.wins),
+    totalGames: Number(row.total_games)
+  }));
+}

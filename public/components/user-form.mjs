@@ -3,17 +3,23 @@ import { createUser, deleteUser } from "../services/userService.mjs";
 class UserForm extends HTMLElement {
   connectedCallback() {
     this.innerHTML = `
-      <section>
+      <section class="panel">
         <h2>User</h2>
-        <input id="username" placeholder="Username" />
-        <label>
+
+        <div class="form-row">
+          <input id="username" placeholder="Username" />
+        </div>
+
+        <label class="checkbox-row">
           <input type="checkbox" id="tos" />
           I agree to the Terms of Service
         </label>
-        <div>
+
+        <div class="button-row">
           <button id="create-user">Create user</button>
           <button id="delete-user">Delete current user</button>
         </div>
+
         <p id="user-output"></p>
       </section>
     `;
@@ -22,13 +28,16 @@ class UserForm extends HTMLElement {
 
     this.querySelector("#create-user").addEventListener("click", async () => {
       try {
-        const username = this.querySelector("#username").value;
+        const username = this.querySelector("#username").value.trim();
         const acceptTos = this.querySelector("#tos").checked;
 
         const user = await createUser(username, acceptTos);
+
         localStorage.setItem("currentUserId", user.id);
+        localStorage.setItem("currentUsername", user.username);
 
         output.textContent = `Created user: ${user.username}`;
+        window.dispatchEvent(new CustomEvent("user-changed"));
       } catch (error) {
         output.textContent = error.message;
       }
@@ -37,12 +46,18 @@ class UserForm extends HTMLElement {
     this.querySelector("#delete-user").addEventListener("click", async () => {
       try {
         const userId = localStorage.getItem("currentUserId");
-        if (!userId) throw new Error("No current user");
+
+        if (!userId) {
+          throw new Error("No current user");
+        }
 
         await deleteUser(userId);
+
         localStorage.removeItem("currentUserId");
+        localStorage.removeItem("currentUsername");
 
         output.textContent = "User deleted";
+        window.dispatchEvent(new CustomEvent("user-changed"));
       } catch (error) {
         output.textContent = error.message;
       }

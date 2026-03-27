@@ -1,14 +1,25 @@
-import { createRuleset, getAllRulesets, shareRuleset } from "../services/rulesetService.mjs";
+import {
+  createRuleset,
+  getAllRulesets,
+  shareRuleset
+} from "../services/rulesetService.mjs";
 
 class RulesetForm extends HTMLElement {
-  async connectedCallback() {
+  connectedCallback() {
     this.innerHTML = `
-      <section>
+      <section class="panel">
         <h2>Rulesets</h2>
-        <input id="ruleset-name" placeholder="Ruleset name" />
-        <button id="create-ruleset">Create ruleset</button>
-        <button id="load-rulesets">Load rulesets</button>
-        <ul id="ruleset-list"></ul>
+
+        <div class="form-row">
+          <input id="ruleset-name" placeholder="Ruleset name" />
+          <button id="create-ruleset">Create ruleset</button>
+        </div>
+
+        <div class="button-row">
+          <button id="load-rulesets">Load rulesets</button>
+        </div>
+
+        <ul id="ruleset-list" class="ruleset-list"></ul>
         <p id="ruleset-output"></p>
       </section>
     `;
@@ -19,9 +30,13 @@ class RulesetForm extends HTMLElement {
     this.querySelector("#create-ruleset").addEventListener("click", async () => {
       try {
         const ownerId = localStorage.getItem("currentUserId");
-        if (!ownerId) throw new Error("Create a user first");
 
-        const name = this.querySelector("#ruleset-name").value;
+        if (!ownerId) {
+          throw new Error("Create or log in as a user first");
+        }
+
+        const name = this.querySelector("#ruleset-name").value.trim();
+
         const ruleset = await createRuleset({ ownerId, name });
 
         output.textContent = `Created ruleset: ${ruleset.name}`;
@@ -35,20 +50,43 @@ class RulesetForm extends HTMLElement {
         const rulesets = await getAllRulesets();
 
         list.innerHTML = "";
+
         for (const ruleset of rulesets) {
           const item = document.createElement("li");
+          item.className = "ruleset-item";
+
           item.innerHTML = `
-            <strong>${ruleset.name}</strong>
-            <button data-id="${ruleset.id}" class="select-ruleset">Select</button>
-            <button data-id="${ruleset.id}" class="share-ruleset">Share</button>
+            <div class="ruleset-info">
+              <strong>${ruleset.name}</strong>
+              <span>${ruleset.isPublic ? "Public" : "Private"}</span>
+            </div>
+            <div class="button-row">
+              <button
+                data-id="${ruleset.id}"
+                data-name="${ruleset.name}"
+                class="select-ruleset"
+              >
+                Select
+              </button>
+              <button
+                data-id="${ruleset.id}"
+                class="share-ruleset"
+              >
+                Share
+              </button>
+            </div>
           `;
+
           list.appendChild(item);
         }
 
         this.querySelectorAll(".select-ruleset").forEach((button) => {
           button.addEventListener("click", () => {
             localStorage.setItem("currentRulesetId", button.dataset.id);
-            output.textContent = "Ruleset selected";
+            localStorage.setItem("currentRulesetName", button.dataset.name);
+
+            output.textContent = `Selected ruleset: ${button.dataset.name}`;
+            window.dispatchEvent(new CustomEvent("ruleset-changed"));
           });
         });
 

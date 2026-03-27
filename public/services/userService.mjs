@@ -13,3 +13,11 @@ export function deleteUser(userId) {
     method: "DELETE"
   });
 }
+
+export function getStats(userId) {
+  return apiFetch(`/users/${userId}/stats`);
+}
+
+export function getLeaderboard() {
+  return apiFetch("/users/leaderboard");
+}
