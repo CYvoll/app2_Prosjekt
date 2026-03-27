@@ -9,6 +9,7 @@ import {
 class MultiplayerUI extends HTMLElement {
   connectedCallback() {
     this.pollInterval = null;
+    this.hasSubmittedChoice = false;
 
     this.innerHTML = `
       <section class="panel">
@@ -23,7 +24,7 @@ class MultiplayerUI extends HTMLElement {
         <p id="match-info"></p>
         <p id="match-status"></p>
 
-        <div class="button-row">
+        <div class="button-row" id="choice-buttons">
           <button data-choice="rock">Rock</button>
           <button data-choice="paper">Paper</button>
           <button data-choice="scissors">Scissors</button>
@@ -79,6 +80,9 @@ class MultiplayerUI extends HTMLElement {
       });
 
       localStorage.setItem("currentMatchId", match.id);
+      this.hasSubmittedChoice = false;
+      this.setChoiceButtonsDisabled(false);
+      this.setResult("");
 
       const url = new URL(window.location.href);
       url.searchParams.set("match", match.shareCode);
@@ -101,6 +105,10 @@ class MultiplayerUI extends HTMLElement {
     try {
       const match = await getMatchByShareCode(shareCode);
       localStorage.setItem("currentMatchId", match.id);
+
+      this.hasSubmittedChoice = false;
+      this.setChoiceButtonsDisabled(false);
+      this.setResult("");
 
       this.setInfo(`Loaded match: ${match.id}`);
       this.renderMatch(match);
@@ -126,6 +134,11 @@ class MultiplayerUI extends HTMLElement {
 
     try {
       const match = await joinMatch(matchId, userId);
+
+      this.hasSubmittedChoice = false;
+      this.setChoiceButtonsDisabled(false);
+      this.setResult("");
+
       this.setInfo(`Joined match: ${match.id}`);
       this.renderMatch(match);
       this.startPolling();
@@ -152,13 +165,23 @@ class MultiplayerUI extends HTMLElement {
       return;
     }
 
+    if (this.hasSubmittedChoice) {
+      this.setResult("You have already submitted a choice");
+      return;
+    }
+
     try {
       const match = await playMatch(matchId, userId, choice);
+
+      this.hasSubmittedChoice = true;
+      this.setChoiceButtonsDisabled(true);
 
       if (!match.result) {
         this.setResult("Choice submitted. Waiting for other player...");
       } else {
         this.renderResult(match);
+        this.hasSubmittedChoice = false;
+        this.setChoiceButtonsDisabled(false);
       }
 
       this.renderMatch(match);
@@ -185,6 +208,19 @@ class MultiplayerUI extends HTMLElement {
 
       if (match.result) {
         this.renderResult(match);
+        this.hasSubmittedChoice = false;
+        this.setChoiceButtonsDisabled(false);
+      } else {
+        const currentUserId = localStorage.getItem("currentUserId");
+        const isHost = currentUserId === match.hostUserId;
+        const isGuest = currentUserId === match.guestUserId;
+
+        const alreadyPlayed =
+          (isHost && !!match.hostChoice) ||
+          (isGuest && !!match.guestChoice);
+
+        this.hasSubmittedChoice = alreadyPlayed;
+        this.setChoiceButtonsDisabled(alreadyPlayed);
       }
 
       window.dispatchEvent(
@@ -262,6 +298,12 @@ class MultiplayerUI extends HTMLElement {
     this.setResult(
       `Host chose ${match.hostChoice}, Guest chose ${match.guestChoice}. ${winner}.`
     );
+  }
+
+  setChoiceButtonsDisabled(disabled) {
+    this.querySelectorAll("button[data-choice]").forEach((button) => {
+      button.disabled = disabled;
+    });
   }
 
   setInfo(message) {
