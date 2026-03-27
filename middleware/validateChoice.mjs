@@ -1,19 +1,25 @@
-import { getDefaultRuleset } from "../data/rulesets.mjs";
+import * as rulesets from "../data/rulesets.mjs";
 
 export async function validateChoice(req, res, next) {
-  const { choice } = req.body;
+  const { rulesetId, choice } = req.body;
 
-  const ruleset = getDefaultRuleset();
-
-  if (!choice) {
+  if (!rulesetId || !choice) {
     return res.status(400).json({
-      error: "Choice is required"
+      error: "rulesetId and choice are required"
+    });
+  }
+
+  const ruleset = await rulesets.getById(rulesetId);
+
+  if (!ruleset) {
+    return res.status(404).json({
+      error: "Ruleset not found"
     });
   }
 
   if (!ruleset.symbols.includes(choice)) {
     return res.status(400).json({
-      error: "Invalid choice"
+      error: "Invalid choice for this ruleset"
     });
   }
 

@@ -23,6 +23,39 @@ userRouter.get("/leaderboard", async (req, res, next) => {
   }
 });
 
+userRouter.get("/login/:username", async (req, res, next) => {
+  try {
+    const user = await users.getByUsername(req.params.username);
+
+    if (!user) {
+      return res.status(404).json({
+        error: "User not found"
+      });
+    }
+
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
+});
+
+userRouter.get("/:userId/stats", async (req, res, next) => {
+  try {
+    const user = await users.getById(req.params.userId);
+
+    if (!user) {
+      return res.status(404).json({
+        error: "User not found"
+      });
+    }
+
+    const stats = await games.getStatsByUserId(req.params.userId);
+    res.json(stats);
+  } catch (error) {
+    next(error);
+  }
+});
+
 userRouter.get("/:userId", async (req, res, next) => {
   try {
     const user = await users.getById(req.params.userId);
@@ -75,24 +108,5 @@ userRouter.delete("/:userId", async (req, res, next) => {
     next(error);
   }
 });
-
-userRouter.get("/:userId/stats", async (req, res, next) => {
-  try {
-    const user = await users.getById(req.params.userId);
-
-    if (!user) {
-      return res.status(404).json({
-        error: "User not found"
-      });
-    }
-
-    const stats = await games.getStatsByUserId(req.params.userId);
-    res.json(stats);
-  } catch (error) {
-    next(error);
-  }
-});
-
-
 
 export default userRouter;

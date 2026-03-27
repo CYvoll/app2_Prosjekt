@@ -8,6 +8,10 @@ export function createUser(username, acceptTos) {
   });
 }
 
+export function loginUserByUsername(username) {
+  return apiFetch(`/users/login/${encodeURIComponent(username)}`);
+}
+
 export function deleteUser(userId) {
   return apiFetch(`/users/${userId}`, {
     method: "DELETE"

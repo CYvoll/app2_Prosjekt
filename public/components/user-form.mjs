@@ -1,4 +1,8 @@
-import { createUser, deleteUser } from "../services/userService.mjs";
+import {
+  createUser,
+  deleteUser,
+  loginUserByUsername
+} from "../services/userService.mjs";
 
 class UserForm extends HTMLElement {
   connectedCallback() {
@@ -17,6 +21,8 @@ class UserForm extends HTMLElement {
 
         <div class="button-row">
           <button id="create-user">Create user</button>
+          <button id="login-user">Log in</button>
+          <button id="logout-user">Log out</button>
           <button id="delete-user">Delete current user</button>
         </div>
 
@@ -41,6 +47,34 @@ class UserForm extends HTMLElement {
       } catch (error) {
         output.textContent = error.message;
       }
+    });
+
+    this.querySelector("#login-user").addEventListener("click", async () => {
+      try {
+        const username = this.querySelector("#username").value.trim();
+
+        if (!username) {
+          throw new Error("Username is required");
+        }
+
+        const user = await loginUserByUsername(username);
+
+        localStorage.setItem("currentUserId", user.id);
+        localStorage.setItem("currentUsername", user.username);
+
+        output.textContent = `Logged in as: ${user.username}`;
+        window.dispatchEvent(new CustomEvent("user-changed"));
+      } catch (error) {
+        output.textContent = error.message;
+      }
+    });
+
+    this.querySelector("#logout-user").addEventListener("click", () => {
+      localStorage.removeItem("currentUserId");
+      localStorage.removeItem("currentUsername");
+
+      output.textContent = "Logged out";
+      window.dispatchEvent(new CustomEvent("user-changed"));
     });
 
     this.querySelector("#delete-user").addEventListener("click", async () => {

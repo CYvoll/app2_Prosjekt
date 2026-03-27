@@ -196,6 +196,11 @@ nav a {
     text-align: left;
   }
 
+  .dashboard-message {
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
   .wins,
   .total {
     text-align: left;

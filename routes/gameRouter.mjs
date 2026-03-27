@@ -22,6 +22,7 @@ gameRouter.post("/", validateChoice, async (req, res, next) => {
     });
 
     const savedGame = await games.create(game);
+
     res.status(201).json(savedGame);
   } catch (error) {
     next(error);

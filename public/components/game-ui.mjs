@@ -5,41 +5,56 @@ class GameUI extends HTMLElement {
     this.innerHTML = `
       <section class="panel">
         <h2>Play</h2>
-        <p>Select a move:</p>
+        <p>Choose your move:</p>
+
         <div class="button-row">
           <button data-choice="rock">Rock</button>
           <button data-choice="paper">Paper</button>
           <button data-choice="scissors">Scissors</button>
         </div>
+
         <p id="result"></p>
       </section>
     `;
 
-    this.querySelectorAll("button[data-choice]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        this.play(btn.dataset.choice);
+    this.querySelectorAll("button[data-choice]").forEach((button) => {
+      button.addEventListener("click", () => {
+        this.play(button.dataset.choice);
       });
     });
   }
 
   async play(choice) {
+    const resultEl = this.querySelector("#result");
+
     try {
       const userId = localStorage.getItem("currentUserId");
-      const rulesetId = localStorage.getItem("currentRulesetId") || "default";
+      const rulesetId = localStorage.getItem("currentRulesetId");
 
       if (!userId) {
-        this.querySelector("#result").textContent = "Create a user first";
-        return;
+        throw new Error("Create or log in as a user first");
       }
 
-      const game = await createGame({ userId, rulesetId, choice });
+      if (!rulesetId) {
+        throw new Error("Select a ruleset first");
+      }
 
-      this.querySelector("#result").textContent =
-        `You chose ${game.playerChoice}, opponent chose ${game.opponentChoice}. Result: ${game.result}`;
+      const game = await createGame({
+        userId,
+        rulesetId,
+        choice
+      });
 
-      window.dispatchEvent(new CustomEvent("game-played", { detail: game }));
+      resultEl.textContent =
+        `You chose ${game.playerChoice}. ` +
+        `AI chose ${game.opponentChoice}. ` +
+        `Result: ${game.result}`;
+
+      window.dispatchEvent(
+        new CustomEvent("game-played", { detail: game })
+      );
     } catch (error) {
-      this.querySelector("#result").textContent = error.message || "Game failed";
+      resultEl.textContent = error.message;
     }
   }
 }

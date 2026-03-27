@@ -6,11 +6,10 @@ class AppDashboard extends HTMLElement {
       <section class="panel">
         <h2>Dashboard</h2>
 
-        <div class="dashboard-top" id="dashboard-top">
+        <div class="dashboard-top">
           <div class="mini-panel">
             <h3>Session</h3>
             <p id="current-user">No user selected</p>
-            <button id="logout-btn">Log out</button>
           </div>
 
           <div class="mini-panel">
@@ -24,24 +23,20 @@ class AppDashboard extends HTMLElement {
           </div>
         </div>
 
-        <div class="dashboard-layout">
+        <div id="dashboard-message" class="dashboard-message"></div>
+
+        <div id="dashboard-layout" class="dashboard-layout">
           <div class="dashboard-game">
             <game-ui></game-ui>
           </div>
 
           <aside class="dashboard-side">
-            <leaderboard-ui></leaderboard-ui>
             <user-stats></user-stats>
+            <leaderboard-ui></leaderboard-ui>
           </aside>
         </div>
       </section>
     `;
-
-    this.querySelector("#logout-btn").addEventListener("click", () => {
-      localStorage.removeItem("currentUserId");
-      this.refresh();
-      window.dispatchEvent(new CustomEvent("user-changed"));
-    });
 
     window.addEventListener("user-changed", () => this.refresh());
     window.addEventListener("ruleset-changed", () => this.refresh());
@@ -58,6 +53,8 @@ class AppDashboard extends HTMLElement {
     const currentUser = this.querySelector("#current-user");
     const currentRuleset = this.querySelector("#current-ruleset");
     const quickStats = this.querySelector("#quick-stats");
+    const dashboardMessage = this.querySelector("#dashboard-message");
+    const dashboardLayout = this.querySelector("#dashboard-layout");
 
     currentUser.textContent = username
       ? `Logged in as: ${username}`
@@ -67,7 +64,17 @@ class AppDashboard extends HTMLElement {
 
     if (!userId) {
       quickStats.textContent = "Wins: - | Losses: - | Draws: -";
+      dashboardMessage.textContent = "Create or log in as a user to play.";
+      dashboardLayout.style.display = "none";
       return;
+    }
+
+    dashboardLayout.style.display = "grid";
+
+    if (!rulesetName) {
+      dashboardMessage.textContent = "Select a ruleset before playing.";
+    } else {
+      dashboardMessage.textContent = "";
     }
 
     try {

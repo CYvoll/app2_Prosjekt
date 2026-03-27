@@ -30,20 +30,9 @@ export async function getByUserId(userId) {
   return result.rows.map(mapRow);
 }
 
-function mapRow(row) {
-  return {
-    id: row.id,
-    userId: row.user_id,
-    rulesetId: row.ruleset_id,
-    playerChoice: row.player_choice,
-    opponentChoice: row.opponent_choice,
-    result: row.result
-  };
-}
-
 export async function getStatsByUserId(userId) {
   const result = await pool.query(
-    `SELECT result, COUNT(*) as count
+    `SELECT result, COUNT(*) AS count
      FROM games
      WHERE user_id = $1
      GROUP BY result`,
@@ -67,4 +56,15 @@ export async function getStatsByUserId(userId) {
 
   stats.total = stats.wins + stats.losses + stats.draws;
   return stats;
+}
+
+function mapRow(row) {
+  return {
+    id: row.id,
+    userId: row.user_id,
+    rulesetId: row.ruleset_id,
+    playerChoice: row.player_choice,
+    opponentChoice: row.opponent_choice,
+    result: row.result
+  };
 }

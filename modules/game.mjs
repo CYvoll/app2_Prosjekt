@@ -6,7 +6,9 @@ export function getRandomChoice(symbols) {
 }
 
 export function calculateResult(playerChoice, opponentChoice, rules) {
-  if (playerChoice === opponentChoice) return "draw";
+  if (playerChoice === opponentChoice) {
+    return "draw";
+  }
 
   const winsAgainst = rules[playerChoice] || [];
 
@@ -18,13 +20,20 @@ export function calculateResult(playerChoice, opponentChoice, rules) {
 }
 
 export function makeGame({ userId, ruleset, choice }) {
-  const opponentChoice = getRandomChoice(ruleset.symbols);
+  if (!userId) {
+    throw new Error("userId is required");
+  }
 
-  const result = calculateResult(
-    choice,
-    opponentChoice,
-    ruleset.rules
-  );
+  if (!ruleset) {
+    throw new Error("ruleset is required");
+  }
+
+  if (!choice) {
+    throw new Error("choice is required");
+  }
+
+  const opponentChoice = getRandomChoice(ruleset.symbols);
+  const result = calculateResult(choice, opponentChoice, ruleset.rules);
 
   return {
     id: generateId("game"),
