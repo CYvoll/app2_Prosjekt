@@ -229,3 +229,26 @@ button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+.rules-textarea-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.rules-textarea-row textarea {
+  width: 100%;
+  padding: 0.6rem;
+  font-family: monospace;
+  resize: vertical;
+}
+
+.ruleset-info code {
+  display: inline-block;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: #f3f3f3;
+  padding: 0.2rem 0.35rem;
+  border-radius: 4px;
+}

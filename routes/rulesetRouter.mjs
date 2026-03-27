@@ -28,7 +28,7 @@ rulesetRouter.get("/:rulesetId", async (req, res, next) => {
 
     if (!ruleset) {
       return res.status(404).json({
-        error: "Ruleset not found"
+        error: req.t?.rulesetNotFound || "Ruleset not found"
       });
     }
 
@@ -40,7 +40,7 @@ rulesetRouter.get("/:rulesetId", async (req, res, next) => {
 
 rulesetRouter.post("/", async (req, res, next) => {
   try {
-    const newRuleset = makeRuleset(req.body);
+    const newRuleset = makeRuleset(req.body, req.t);
     const savedRuleset = await rulesets.create(newRuleset);
 
     res.status(201).json(savedRuleset);
@@ -55,7 +55,7 @@ rulesetRouter.put("/:rulesetId", async (req, res, next) => {
 
     if (!updated) {
       return res.status(404).json({
-        error: "Ruleset not found"
+        error: req.t?.rulesetNotFound || "Ruleset not found"
       });
     }
 
@@ -71,7 +71,7 @@ rulesetRouter.post("/:rulesetId/share", async (req, res, next) => {
 
     if (!shared) {
       return res.status(404).json({
-        error: "Ruleset not found"
+        error: req.t?.rulesetNotFound || "Ruleset not found"
       });
     }
 
