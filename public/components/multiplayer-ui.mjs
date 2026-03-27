@@ -17,7 +17,6 @@ class MultiplayerUI extends HTMLElement {
 
         <div class="button-row">
           <button id="create-match">Create match link</button>
-          <button id="load-match">Load match from URL</button>
           <button id="join-match">Join loaded match</button>
         </div>
 
@@ -36,10 +35,6 @@ class MultiplayerUI extends HTMLElement {
 
     this.querySelector("#create-match").addEventListener("click", () => {
       this.handleCreateMatch();
-    });
-
-    this.querySelector("#load-match").addEventListener("click", () => {
-      this.handleLoadMatchFromUrl();
     });
 
     this.querySelector("#join-match").addEventListener("click", () => {
@@ -80,8 +75,9 @@ class MultiplayerUI extends HTMLElement {
       });
 
       localStorage.setItem("currentMatchId", match.id);
+
       this.hasSubmittedChoice = false;
-      this.setChoiceButtonsDisabled(false);
+      this.setChoiceButtonsDisabled(true);
       this.setResult("");
 
       const url = new URL(window.location.href);
@@ -107,7 +103,6 @@ class MultiplayerUI extends HTMLElement {
       localStorage.setItem("currentMatchId", match.id);
 
       this.hasSubmittedChoice = false;
-      this.setChoiceButtonsDisabled(false);
       this.setResult("");
 
       this.setInfo(`Loaded match: ${match.id}`);
@@ -133,10 +128,33 @@ class MultiplayerUI extends HTMLElement {
     }
 
     try {
+      const currentMatch = await getMatchById(matchId);
+
+      if (!currentMatch) {
+        this.setInfo("Match not found");
+        return;
+      }
+
+      if (currentMatch.guestUserId) {
+        if (currentMatch.guestUserId === userId) {
+          this.setInfo("You have already joined this match");
+        } else {
+          this.setInfo("This match already has a guest");
+        }
+
+        this.renderMatch(currentMatch);
+        return;
+      }
+
+      if (currentMatch.hostUserId === userId) {
+        this.setInfo("You are the host of this match");
+        this.renderMatch(currentMatch);
+        return;
+      }
+
       const match = await joinMatch(matchId, userId);
 
       this.hasSubmittedChoice = false;
-      this.setChoiceButtonsDisabled(false);
       this.setResult("");
 
       this.setInfo(`Joined match: ${match.id}`);
@@ -171,6 +189,14 @@ class MultiplayerUI extends HTMLElement {
     }
 
     try {
+      const currentMatch = await getMatchById(matchId);
+
+      if (!currentMatch.guestUserId) {
+        this.setResult("Waiting for a second player to join");
+        this.setChoiceButtonsDisabled(true);
+        return;
+      }
+
       const match = await playMatch(matchId, userId, choice);
 
       this.hasSubmittedChoice = true;
@@ -219,8 +245,13 @@ class MultiplayerUI extends HTMLElement {
           (isHost && !!match.hostChoice) ||
           (isGuest && !!match.guestChoice);
 
+        const canPlay =
+          !!match.guestUserId &&
+          (isHost || isGuest) &&
+          !alreadyPlayed;
+
         this.hasSubmittedChoice = alreadyPlayed;
-        this.setChoiceButtonsDisabled(alreadyPlayed);
+        this.setChoiceButtonsDisabled(!canPlay);
       }
 
       window.dispatchEvent(
